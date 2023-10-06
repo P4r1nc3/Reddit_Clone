@@ -24,4 +24,9 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()).build();
     }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
