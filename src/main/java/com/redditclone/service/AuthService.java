@@ -1,6 +1,7 @@
 package com.redditclone.service;
 
 import com.redditclone.dto.RegisterRequest;
+import com.redditclone.exceptions.SpringRedditException;
 import com.redditclone.model.NotificationEmail;
 import com.redditclone.model.User;
 import com.redditclone.model.VerificationToken;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,5 +50,11 @@ public class AuthService {
 
         verificationTokenRepository.save(verificationToken);
         return token;
+    }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+        verificationToken.orElseThrow(() -> new SpringRedditException("Invalid Token!"));
+        fetchUserAndEnable(verificationToken.get());
     }
 }
